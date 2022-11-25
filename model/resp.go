@@ -1,4 +1,4 @@
 package model
 
-type resp struct {
+type Resp struct {
 }

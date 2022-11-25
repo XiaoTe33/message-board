@@ -1,4 +1,4 @@
 package model
 
-type post struct {
+type Post struct {
 }

@@ -1,6 +1,6 @@
 package model
 
-type comment struct {
+type Comment struct {
 	Sender   string
 	Receiver string
 	Time     string
