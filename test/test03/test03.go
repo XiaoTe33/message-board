@@ -7,6 +7,9 @@ import (
 )
 
 func main() {
+	api.ChangeP()
+}
+func main04() {
 	//u := "xiaote33"
 	//err := dao.FindMessage(u)
 	ID := 1

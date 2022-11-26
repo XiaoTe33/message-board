@@ -51,5 +51,32 @@ func Login() {
 		//LoginPage()
 		return
 	}
+}
 
+func ChangeP() {
+	for {
+		u := ""
+		p := ""
+		fmt.Print("用户名:")
+		fmt.Scan(&u)
+		fmt.Print("密码:")
+		fmt.Scan(&p)
+		if err := dao.UPExist(u, p); err != nil {
+			fmt.Println("用户名或密码错误")
+			continue
+		}
+		fmt.Println("认证成功")
+		for {
+			fmt.Print("请输入新密码:")
+			fmt.Scan(&p)
+			if !PasswordIsValid(p) {
+				fmt.Println("密码过长")
+				continue
+			}
+
+			dao.UpdateP(u, p)
+			break
+		}
+		return
+	}
 }

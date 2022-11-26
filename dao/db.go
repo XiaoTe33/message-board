@@ -100,3 +100,14 @@ func FindMessage(receiver string) error {
 	}
 	return nil
 }
+
+func UpdateP(username string, password string) {
+	db, _ := InitDB()
+	sqlStr := "update userdata set password=? where username=?"
+	_, err := db.Exec(sqlStr, password, username)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("密码修改成功")
+}
