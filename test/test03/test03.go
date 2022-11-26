@@ -7,6 +7,9 @@ import (
 )
 
 func main() {
+	api.SendComment("xiaote")
+}
+func main05() {
 	api.ChangeP()
 }
 func main04() {

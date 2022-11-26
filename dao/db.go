@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"message-board/model"
+	"strconv"
+	"time"
 )
 
 func UExist(username string) error {
@@ -110,4 +112,16 @@ func UpdateP(username string, password string) {
 		return
 	}
 	fmt.Println("密码修改成功")
+}
+
+func AddMessage(username string, receiver string, text string) {
+	db, _ := InitDB()
+	now := time.Now()
+	t := strconv.Itoa(now.Hour()) + strconv.Itoa(now.Minute()) + strconv.Itoa(now.Second())
+	sqlStr := "insert into messages values(null, ?, ?, ?, ?)"
+	_, err := db.Exec(sqlStr, username, receiver, t, text)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
