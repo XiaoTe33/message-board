@@ -7,6 +7,14 @@ import (
 )
 
 func main() {
+	u := "xiaote33"
+	err := dao.FindMessage(u)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func main03() {
 	//api.Register()
 	api.Login()
 }
