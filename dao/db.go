@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func UExist(username string) error {
+func UsernameExist(username string) error {
 	db, _ := InitDB()
 	sqlStr := "select username from userdata where username = ?"
 	stmt, err := db.Prepare(sqlStr)
@@ -24,7 +24,7 @@ func UExist(username string) error {
 	return nil
 }
 
-func UPExist(username string, password string) error {
+func UsernameAndPasswordExist(username string, password string) error {
 	db, _ := InitDB()
 	sqlStr := "select username from userdata where username = ? and password = ?"
 	stmt, err := db.Prepare(sqlStr)
@@ -40,10 +40,16 @@ func UPExist(username string, password string) error {
 	return nil
 }
 func AddUser(username string, password string) { //
-	fmt.Println(username, password)
+	db, _ := InitDB()
+	sqlStr := "insert into userdata values(null, ?, ?)"
+	_, err := db.Exec(sqlStr, username, password)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
 
-func FindComment(MID int) error {
+func FindCommentByMID(MID string) error {
 	db, _ := InitDB()
 	sqlStr := "select mid, cid, sender, receiver, time, text from comments where mid = ?"
 	stmt, err := db.Prepare(sqlStr)
@@ -73,7 +79,7 @@ func FindComment(MID int) error {
 	return nil
 }
 
-func FindMessage(receiver string) error {
+func FindMessageByReceiver(receiver string) error {
 	db, _ := InitDB()
 	sqlStr := "select id, sender, receiver, time, text from messages where receiver = ?"
 	stmt, err := db.Prepare(sqlStr)
@@ -103,7 +109,7 @@ func FindMessage(receiver string) error {
 	return nil
 }
 
-func UpdateP(username string, password string) {
+func UpdatePassword(username string, password string) {
 	db, _ := InitDB()
 	sqlStr := "update userdata set password=? where username=?"
 	_, err := db.Exec(sqlStr, password, username)
@@ -124,4 +130,27 @@ func AddMessage(username string, receiver string, text string) {
 		fmt.Println(err)
 		return
 	}
+}
+
+func UpdateMessageByMID(id int, text string) {
+	db, _ := InitDB()
+	sqlStr := "update messages set text = ? where id =?"
+	_, err := db.Exec(sqlStr, text, id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+}
+
+func MIDExist(mid int) bool {
+	db, _ := InitDB()
+	sqlStr := "select id from messages where id = ?"
+	stmt, _ := db.Prepare(sqlStr)
+	row := stmt.QueryRow(mid)
+	id := 0
+	err := row.Scan(&id)
+	if err != nil {
+		return false
+	}
+	return true
 }

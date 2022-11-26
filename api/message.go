@@ -29,3 +29,26 @@ func SendComment(username string) {
 	}
 	dao.AddMessage(username, r, m)
 }
+
+func ChangeMessageByMID() {
+	for {
+		mid := 0
+		fmt.Print("请输入留言mid:")
+		fmt.Scan(&mid)
+		text := ""
+		fmt.Print("请输入修改后的文本:")
+		fmt.Scan(&text)
+		if !dao.MIDExist(mid) {
+			fmt.Println("mid不存在")
+			continue
+		}
+		if !TextIsValid(text) {
+			fmt.Println("文本太长")
+			continue
+		}
+		dao.UpdateMessageByMID(mid, text)
+		fmt.Println("修改成功")
+		break
+	}
+
+}
