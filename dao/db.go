@@ -41,13 +41,39 @@ func AddUser(username string, password string) { //
 	fmt.Println(username, password)
 }
 
-func FindComment() {
+func FindComment(MID int) error {
+	db, _ := InitDB()
+	sqlStr := "select mid, cid, sender, receiver, time, text from comments where mid = ?"
+	stmt, err := db.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	rows, err := stmt.Query(MID)
+	if err != nil {
+		return err
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(rows)
+	fmt.Printf("%-8v|  %-8v|  %-20v|  %-20v|  %-20v|  %v\n", "MID", "CID", "Sender", "Receiver", "Time", "Text")
+	for rows.Next() {
+		var c model.Comment
+		err := rows.Scan(&c.MID, &c.CID, &c.Sender, &c.Receiver, &c.Time, &c.Text)
+		if err != nil {
+			return err
+		}
 
+		fmt.Printf("%-8v|  %-8v|  %-20v|  %-20v|  %-20v|  %v\n", c.MID, c.CID, c.Sender, c.Receiver, c.Time, c.Text)
+	}
+	return nil
 }
 
 func FindMessage(receiver string) error {
 	db, _ := InitDB()
-	sqlStr := "select id,sender,receiver,time,text from messages where receiver = ?"
+	sqlStr := "select id, sender, receiver, time, text from messages where receiver = ?"
 	stmt, err := db.Prepare(sqlStr)
 	if err != nil {
 		return err

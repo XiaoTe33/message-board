@@ -7,8 +7,10 @@ import (
 )
 
 func main() {
-	u := "xiaote33"
-	err := dao.FindMessage(u)
+	//u := "xiaote33"
+	//err := dao.FindMessage(u)
+	ID := 1
+	err := dao.FindComment(ID)
 	if err != nil {
 		fmt.Println(err)
 	}
