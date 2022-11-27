@@ -9,7 +9,7 @@ func Start() {
 	u := r.Group("/user")
 	{
 		u.POST("/register", Register1)
-		u.POST("/login", Login1)
+		u.POST("/login", Login1) //同时显示用户的留言板
 		u.POST("/changePassword", ChangePassword1)
 	}
 	m := r.Group("/message")
@@ -17,12 +17,14 @@ func Start() {
 		m.POST("/send", Send1)
 		m.POST("/change", Change1)
 		m.POST("/delete", Delete1)
+		m.POST("/comments", Comments)
 	}
-	c := m.Group("/comment")
+	c := r.Group("/comment")
 	{
 		c.POST("/send", Send2)
 		c.POST("/change", Change2)
 		c.POST("/delete", Delete2)
+		c.POST("/response", Response)
 	}
 	r.Run()
 }

@@ -51,4 +51,14 @@ func Delete1(c *gin.Context) {
 	}
 	dao.DeleteMessageByMID(mid)
 	c.JSON(200, gin.H{"msg": "留言删除成功"})
+
+}
+
+func Comments(c *gin.Context) {
+	mid := c.PostForm("mid")
+	if !dao.MIDExist(mid) {
+		c.JSON(200, gin.H{"err": "mid不存在"})
+		return
+	}
+	c.JSON(200, dao.FindCommentByMID(mid))
 }

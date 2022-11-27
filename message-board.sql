@@ -29,7 +29,8 @@ create table comments(
     sender varchar(20) not null ,
     time time not null ,
     text text not null,
-    deleted varchar(10) default '0'
+    deleted varchar(10) default '0',
+    rid int default '0'
 );
 insert into comments(mid, cid, sender,  time, text)
 values (1,1,'xiaote33','10:14:22','I love U, too');
