@@ -1,7 +1,7 @@
 package model
 
 type Message struct {
-	ID       int
+	MID      string
 	Sender   string
 	Receiver string
 	Time     string

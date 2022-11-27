@@ -2,41 +2,46 @@ package main
 
 import (
 	"fmt"
-	"message-board/api"
 	"message-board/dao"
+	"message-board/test/test05"
 )
 
 func main() {
-	api.SendComment("xiaote")
+	//api.ChangeMessage()
+	main04()
+}
+func main06() {
+	//api.SendMessage("xiaote")
+	main03()
 }
 func main05() {
-	api.ChangeP()
+	test05.ChangeP()
 }
 func main04() {
 	//u := "xiaote33"
-	//err := dao.FindMessage(u)
-	ID := 1
-	err := dao.FindComment(ID)
+	//err := dao.FindMessageByReceiver(u)
+	ID := "1"
+	err := dao.FindCommentByMID(ID)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
 func main03() {
-	//api.Register()
-	api.Login()
+	test05.Register()
+	//api.Login()
 }
 func main02() {
 	u := "xiaote"
 	p := "1"
-	err := dao.UPExist(u, p)
+	err := dao.UsernameAndPasswordExist(u, p)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 func main01() {
 	u := "xiaote"
-	err := dao.UExist(u)
+	err := dao.UsernameExist(u)
 	if err != nil {
 		fmt.Println(err)
 	}

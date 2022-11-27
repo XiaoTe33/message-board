@@ -1,11 +1,4 @@
-package api
-
-func TextIsValid(text string) bool { //文本长度小于80
-	if len([]rune(text)) <= 80 {
-		return true
-	}
-	return false
-}
+package service
 
 func UsernameIsValid(username string) bool { //名字长度小于20
 	if len([]rune(username)) <= 20 {

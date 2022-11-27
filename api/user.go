@@ -1,82 +1,51 @@
 package api
 
 import (
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"message-board/dao"
+	"message-board/service"
 )
 
-func Register() {
-	u := ""
-	for {
-		fmt.Print("用户名:")
-		fmt.Scan(&u)
-		if !UsernameIsValid(u) {
-			fmt.Println("用户名过长")
-			continue
-		}
-		if err := dao.UsernameExist(u); err == nil {
-			fmt.Println("用户名已存在")
-			continue
-		}
-		fmt.Println("用户名合理")
-		break
-	}
-	for {
-		p := ""
-		fmt.Print("密码:")
-		fmt.Scan(&p)
-		if !PasswordIsValid(p) {
-			fmt.Println("密码过长")
-			continue
-		}
-		dao.AddUser(u, p)
-		fmt.Println("注册成功")
+func Register1(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	if !service.UsernameIsValid(username) {
+		c.JSON(200, gin.H{"err": "用户名无效"})
 		return
 	}
+	if err := dao.UsernameExist(username); err == nil {
+		c.JSON(200, gin.H{"err": "用户名已存在"})
+		return
+	}
+	if !service.PasswordIsValid(password) {
+		c.JSON(200, gin.H{"err": "密码无效"})
+		return
+	}
+	dao.AddUser(username, password)
+	c.JSON(200, gin.H{"msg": "注册成功"})
+
 }
-
-func Login() {
-	for {
-		u := ""
-		p := ""
-		fmt.Print("用户名:")
-		fmt.Scan(&u)
-		fmt.Print("密码:")
-		fmt.Scan(&p)
-		if err := dao.UsernameAndPasswordExist(u, p); err != nil {
-			fmt.Println("用户名或密码错误")
-			continue
-		}
-		fmt.Println("登陆成功")
-		//LoginPage()
+func Login1(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	if err := dao.UsernameAndPasswordExist(username, password); err != nil {
+		c.JSON(200, gin.H{"err": "用户名或密码错误"})
 		return
 	}
+	c.JSON(200, dao.FindMessageByReceiver(username))
 }
-
-func ChangeP() {
-	for {
-		u := ""
-		p := ""
-		fmt.Print("用户名:")
-		fmt.Scan(&u)
-		fmt.Print("密码:")
-		fmt.Scan(&p)
-		if err := dao.UsernameAndPasswordExist(u, p); err != nil {
-			fmt.Println("用户名或密码错误")
-			continue
-		}
-		fmt.Println("认证成功")
-		for {
-			fmt.Print("请输入新密码:")
-			fmt.Scan(&p)
-			if !PasswordIsValid(p) {
-				fmt.Println("密码过长")
-				continue
-			}
-
-			dao.UpdatePassword(u, p)
-			break
-		}
+func ChangePassword1(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	if err := dao.UsernameAndPasswordExist(username, password); err != nil {
+		c.JSON(200, gin.H{"err": "用户名或密码错误"})
 		return
 	}
+	newPassword := c.PostForm("newPassword")
+	if !service.PasswordIsValid(newPassword) {
+		c.JSON(200, gin.H{"err": "新密码无效"})
+		return
+	}
+	dao.UpdatePassword(username, newPassword)
+	c.JSON(200, gin.H{"msg": "密码修改成功"})
 }
