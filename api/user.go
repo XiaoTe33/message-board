@@ -25,6 +25,7 @@ func Register1(c *gin.Context) {
 	c.JSON(200, gin.H{"msg": "注册成功"})
 
 }
+
 func Login1(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
@@ -34,6 +35,7 @@ func Login1(c *gin.Context) {
 	}
 	c.JSON(200, dao.FindMessageByReceiver(username))
 }
+
 func ChangePassword1(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
