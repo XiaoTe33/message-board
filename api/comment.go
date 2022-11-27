@@ -46,9 +46,9 @@ func Send1(c *gin.Context) {
 func Delete1(c *gin.Context) {
 	mid := c.PostForm("mid")
 	if !dao.MIDExist(mid) {
-		c.JSON(200, gin.H{"err": "mid无效"})
+		c.JSON(200, gin.H{"msg": "mid无效"})
 		return
 	}
 	dao.DeleteMessageByMID(mid)
-	c.JSON(200, gin.H{"msg": "留言删除成功"})
+
 }

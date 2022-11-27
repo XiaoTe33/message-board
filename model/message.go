@@ -6,5 +6,4 @@ type Message struct {
 	Receiver string
 	Time     string
 	Text     string
-	Delete   string
 }

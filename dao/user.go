@@ -36,7 +36,7 @@ func UsernameAndPasswordExist(username string, password string) error {
 
 func AddUser(username string, password string) { //
 	db, _ := InitDB()
-	sqlStr := "insert into userdata(uid, username, password) values(null, ?, ?)"
+	sqlStr := "insert into userdata values(null, ?, ?)"
 	_, err := db.Exec(sqlStr, username, password)
 	if err != nil {
 		fmt.Println(err)
