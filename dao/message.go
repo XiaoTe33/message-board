@@ -77,7 +77,7 @@ func AddMessage(username string, receiver string, text string) {
 	db, _ := InitDB()
 	now := time.Now()
 	t := strconv.Itoa(now.Hour()) + strconv.Itoa(now.Minute()) + strconv.Itoa(now.Second())
-	sqlStr := "insert into messages values(null, ?, ?, ?, ?)"
+	sqlStr := "insert into messages(mid, sender, receiver, time, text) values(null, ?, ?, ?, ?)"
 	_, err := db.Exec(sqlStr, username, receiver, t, text)
 	if err != nil {
 		fmt.Println("Exec err")
@@ -110,5 +110,11 @@ func MIDExist(mid string) bool {
 }
 
 func DeleteMessageByMID(mid string) {
-
+	db, _ := InitDB()
+	sqlStr := "update messages set deleted = '留言已删除' where mid =?"
+	_, err := db.Exec(sqlStr, mid)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
