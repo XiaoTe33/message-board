@@ -14,6 +14,7 @@ create table messages(
     text text not null ,
     deleted varchar(10) default '0'
 );
+
 insert into userdata(uid, username, password) values (1,'xiaote','1');
 insert into userdata(uid, username, password) values (null,'xiaote33','1');
 
@@ -26,11 +27,9 @@ create table comments(
     mid int not null ,
     cid int primary key auto_increment,
     sender varchar(20) not null ,
-    receiver varchar(20) not null ,
     time time not null ,
-    text text not null
+    text text not null,
+    deleted varchar(10) default '0'
 );
-insert into comments(mid, cid, sender, receiver, time, text) values (1,1,'xiaote33','xiaote','10:14:22','I love U, too');
-
-
-
+insert into comments(mid, cid, sender,  time, text)
+values (1,1,'xiaote33','10:14:22','I love U, too');

@@ -18,6 +18,11 @@ func Start() {
 		m.POST("/change", Change1)
 		m.POST("/delete", Delete1)
 	}
-
+	c := m.Group("/comment")
+	{
+		c.POST("/send", Send2)
+		c.POST("/change", Change2)
+		c.POST("/delete", Delete2)
+	}
 	r.Run()
 }
