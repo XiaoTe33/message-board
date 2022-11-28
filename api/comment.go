@@ -76,3 +76,12 @@ func Response(c *gin.Context) {
 	dao.AddResponseComment(sender, mid, rid, text)
 	c.JSON(200, gin.H{"msg": "回复成功"})
 }
+
+func Dialog(c *gin.Context) {
+	cid := c.PostForm("cid")
+	if !dao.CIDExist(cid) {
+		c.JSON(200, gin.H{"err": "cid不存在"})
+		return
+	}
+	c.JSON(200, dao.FindDialogByCID(cid))
+}

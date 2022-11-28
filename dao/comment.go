@@ -66,6 +66,7 @@ func CIDExist(cid string) bool {
 	}
 	return true
 }
+
 func RIDExist(rid string) bool {
 	return CIDExist(rid)
 }
@@ -100,4 +101,79 @@ func AddResponseComment(sender string, mid string, rid string, text string) {
 		fmt.Println("Exec err")
 		return
 	}
+}
+
+func FindDialogByCID(cid string) map[string]model.Comment {
+	var dialog = map[string]model.Comment{}
+	db, _ := InitDB()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
+	sqlStr := "select cid from comments "
+	rows, err := db.Query(sqlStr)
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			fmt.Println("close err")
+		}
+	}(rows)
+	if err != nil {
+		fmt.Println("query err")
+		return nil
+	}
+	for rows.Next() {
+		cid2 := ""
+		err := rows.Scan(&cid2)
+		if err != nil {
+			fmt.Println("Scan err")
+			return nil
+		}
+		if FindFatherCommentByCID(cid) == FindFatherCommentByCID(cid2) {
+			db2, _ := InitDB()
+			sqlStr2 := "select mid, cid, sender, time, text, deleted, rid from comments where cid = ?"
+			row := db2.QueryRow(sqlStr2, cid2)
+			var comment model.Comment
+			err := row.Scan(&comment.MID, &comment.CID, &comment.Sender,
+				&comment.Time, &comment.Text, &comment.Deleted, &comment.RID)
+			if err != nil {
+				fmt.Println("Scan err2")
+				return nil
+			}
+			dialog[comment.CID] = comment
+			err2 := db2.Close()
+			if err2 != nil {
+				return nil
+			}
+		}
+
+	}
+	return dialog
+}
+func FindFatherCommentByCID(cid string) string {
+	db, _ := InitDB()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
+	//1.找到根节点cid
+	for {
+		sqlStr := "select rid from comments where cid =?"
+		row := db.QueryRow(sqlStr, cid)
+		rid := ""
+		err := row.Scan(&rid)
+		if err != nil {
+			fmt.Println("scan err")
+			return ""
+		}
+		if rid == "0" {
+			break
+		}
+		cid = rid
+	}
+	return cid
 }

@@ -7,4 +7,5 @@ type Comment struct {
 	Time    string
 	Text    string
 	Deleted string
+	RID     string
 }

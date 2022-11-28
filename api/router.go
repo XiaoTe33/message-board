@@ -25,6 +25,7 @@ func Start() {
 		c.POST("/change", Change2)
 		c.POST("/delete", Delete2)
 		c.POST("/response", Response)
+		c.POST("/dialog", Dialog)
 	}
 	r.Run()
 }
