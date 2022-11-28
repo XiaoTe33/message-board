@@ -10,6 +10,12 @@ import (
 
 func FindMessageByReceiver(receiver string) interface{} {
 	db, _ := InitDB()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 	sqlStr := "select mid, sender, receiver, time, text from messages where receiver = ?"
 	stmt, err := db.Prepare(sqlStr)
 	if err != nil {
@@ -45,6 +51,12 @@ func FindMessageByReceiver(receiver string) interface{} {
 
 func AddMessage(username string, receiver string, text string) {
 	db, _ := InitDB()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 	now := time.Now()
 	t := strconv.Itoa(now.Hour()) + strconv.Itoa(now.Minute()) + strconv.Itoa(now.Second())
 	sqlStr := "insert into messages(mid, sender, receiver, time, text) values(null, ?, ?, ?, ?)"
@@ -57,6 +69,12 @@ func AddMessage(username string, receiver string, text string) {
 
 func UpdateMessageByMID(mid string, text string) {
 	db, _ := InitDB()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 	sqlStr := "update messages set text = ? where mid =?"
 	_, err := db.Exec(sqlStr, text, mid)
 	if err != nil {
@@ -67,6 +85,12 @@ func UpdateMessageByMID(mid string, text string) {
 
 func MIDExist(mid string) bool {
 	db, _ := InitDB()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 	sqlStr := "select mid from messages where mid = ?"
 	stmt, _ := db.Prepare(sqlStr)
 	row := stmt.QueryRow(mid)
@@ -81,6 +105,12 @@ func MIDExist(mid string) bool {
 
 func DeleteMessageByMID(mid string) {
 	db, _ := InitDB()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 	sqlStr := "update messages set deleted = '留言已删除' where mid =?"
 	_, err := db.Exec(sqlStr, mid)
 	if err != nil {
