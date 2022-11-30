@@ -1,7 +1,7 @@
 package model
 
 type Comment struct {
-	MID     string //所属评论
+	MID     string //所属留言
 	CID     string //主键
 	Sender  string //
 	Time    string //
