@@ -12,6 +12,7 @@ func Start() {
 		u.POST("/register", Register1)
 		u.POST("/login", Login1) //登录同时显示用户的留言板
 		u.POST("/changePassword", ChangePassword1)
+		u.POST("/logout", Logout)
 	}
 	m := r.Group("/message")
 	{
