@@ -33,7 +33,10 @@ func Login1(c *gin.Context) {
 		c.JSON(200, gin.H{"err": "用户名或密码错误"})
 		return
 	}
+	c.SetCookie("cookie", username, 3600, "/user/", "localhost", false, true)
+	c.SetCookie("cookie", username, 3600, "/comment/", "localhost", false, true)
 	c.JSON(200, dao.FindMessageByReceiver(username))
+
 }
 
 func ChangePassword1(c *gin.Context) {

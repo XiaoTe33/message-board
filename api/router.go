@@ -6,10 +6,11 @@ import (
 
 func Start() {
 	r := gin.Default()
+	r.Use(InsertCookie())
 	u := r.Group("/user")
 	{
 		u.POST("/register", Register1)
-		u.POST("/login", Login1) //同时显示用户的留言板
+		u.POST("/login", Login1) //登录同时显示用户的留言板
 		u.POST("/changePassword", ChangePassword1)
 	}
 	m := r.Group("/message")
