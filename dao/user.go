@@ -56,14 +56,14 @@ func AddUser(username string, password string) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			fmt.Println("close err")
 		}
 	}(db)
 
 	sqlStr := "insert into userdata(uid, username, password) values(null, ?, ?)"
 	_, err := db.Exec(sqlStr, username, password)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Exec err")
 		return
 	}
 }
