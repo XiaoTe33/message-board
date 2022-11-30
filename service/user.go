@@ -17,7 +17,7 @@ func UsernameIsValid(username string) bool { //名字长度小于20
 		fmt.Println("reg err")
 	}
 	allString := reg.FindAllString(username, -1)
-	if allString[0] != "" {
+	if allString != nil {
 		return false
 	}
 
@@ -38,7 +38,7 @@ func PasswordIsValid(password string) bool { //密码长度小于20
 		fmt.Println("reg err")
 	}
 	allString := reg.FindAllString(password, -1)
-	if allString[0] != "" {
+	if allString != nil {
 		return false
 	}
 	return true
