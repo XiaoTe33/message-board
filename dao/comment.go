@@ -98,48 +98,8 @@ func AddResponseComment(sender string, mid string, rid string, text string) {
 	}
 }
 
-// FindDialogByCID 通过某条评论查找出前后所有的对话
 func FindDialogByCID(cid string) map[string]model.Comment {
-	var dialog = map[string]model.Comment{}
-	sqlStr := "select cid from comments "
-	rows, err := Db.Query(sqlStr)
-	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-			fmt.Println("close err")
-		}
-	}(rows)
-	if err != nil {
-		fmt.Println("query err")
-		return nil
-	}
-	for rows.Next() {
-		cid2 := ""
-		err := rows.Scan(&cid2)
-		if err != nil {
-			fmt.Println("Scan err")
-			return nil
-		}
-		if FindFatherCommentByCID(cid) == FindFatherCommentByCID(cid2) { //如果根节点相同说明属于同一段对话
-
-			sqlStr2 := "select mid, cid, sender, time, text, deleted, rid from comments where cid = ?"
-			row := Db.QueryRow(sqlStr2, cid2)
-			var comment model.Comment
-			err := row.Scan(&comment.MID, &comment.CID, &comment.Sender,
-				&comment.Time, &comment.Text, &comment.Deleted, &comment.RID)
-			if err != nil {
-				fmt.Println("Scan err2")
-				return nil
-			}
-			dialog[comment.CID] = comment //将所有同一段对话的内容存储起来
-		}
-
-	}
-	return dialog
-}
-
-// FindFatherCommentByCID 找到某个评论的根节点
-func FindFatherCommentByCID(cid string) string {
+	//找到传入评论的根节点
 	for {
 		sqlStr := "select rid from comments where cid =?"
 		row := Db.QueryRow(sqlStr, cid)
@@ -147,12 +107,48 @@ func FindFatherCommentByCID(cid string) string {
 		err := row.Scan(&rid)
 		if err != nil {
 			fmt.Println("scan err")
-			return ""
+			return nil
 		}
 		if rid == "0" {
 			break
 		}
 		cid = rid
 	}
-	return cid
+	sqlStr := "select mid, cid, sender, time, text, deleted, rid from comments where cid =?"
+	var rt model.Comment
+	row := Db.QueryRow(sqlStr, cid)
+	err := row.Scan(&rt.MID, &rt.CID, &rt.Sender, &rt.Time, &rt.Text, &rt.Deleted, &rt.RID)
+	if err != nil {
+		fmt.Println("scan err")
+		return nil
+	}
+	var dialogs = map[string]model.Comment{cid: rt}
+
+	FindChildren(cid, dialogs)
+	return dialogs
+}
+
+// FindChildren 深搜遍历
+func FindChildren(cid string, temp map[string]model.Comment) {
+	sqlStr := "select mid, cid, sender, time, text, deleted, rid from comments where rid =?"
+	rows, err2 := Db.Query(sqlStr, cid)
+	if err2 != nil {
+		fmt.Println("query err")
+		return
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			fmt.Println("close err")
+		}
+	}(rows)
+	for rows.Next() {
+		var c model.Comment
+		err := rows.Scan(&c.MID, &c.CID, &c.Sender, &c.Time, &c.Text, &c.Deleted, &c.RID)
+		if err != nil {
+			fmt.Println("scan err")
+		}
+		temp[c.CID] = c
+		FindChildren(c.CID, temp)
+	}
 }
