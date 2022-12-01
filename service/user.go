@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"message-board/dao"
 	"message-board/util"
 	"regexp"
 	"strings"
@@ -42,4 +43,20 @@ func PasswordIsValid(password string) bool { //密码长度小于20
 		return false
 	}
 	return true
+}
+
+func UsernameExist(username string) error {
+	return dao.FindUsername(username)
+}
+
+func UsernameAndPassWordExist(username string, password string) error {
+	return dao.FindUsernameAndPassword(username, password)
+}
+
+func AddUserOK(username string, password string) {
+	dao.AddUser(username, password)
+}
+
+func UpdatePasswordOK(username string, newPassword string) {
+	dao.UpdatePassword(username, newPassword)
 }

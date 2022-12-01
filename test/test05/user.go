@@ -15,7 +15,7 @@ func Register() {
 			fmt.Println("用户名过长")
 			continue
 		}
-		if err := dao.UsernameExist(u); err == nil {
+		if err := dao.FindUsername(u); err == nil {
 			fmt.Println("用户名已存在")
 			continue
 		}
@@ -44,7 +44,7 @@ func Login() {
 		fmt.Scan(&u)
 		fmt.Print("密码:")
 		fmt.Scan(&p)
-		if err := dao.UsernameAndPasswordExist(u, p); err != nil {
+		if err := dao.FindUsernameAndPassword(u, p); err != nil {
 			fmt.Println("用户名或密码错误")
 			continue
 		}
@@ -62,7 +62,7 @@ func ChangeP() {
 		fmt.Scan(&u)
 		fmt.Print("密码:")
 		fmt.Scan(&p)
-		if err := dao.UsernameAndPasswordExist(u, p); err != nil {
+		if err := dao.FindUsernameAndPassword(u, p); err != nil {
 			fmt.Println("用户名或密码错误")
 			continue
 		}

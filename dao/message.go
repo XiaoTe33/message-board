@@ -62,7 +62,7 @@ func UpdateMessageByMID(mid string, text string) {
 	}
 }
 
-func MIDExist(mid string) bool {
+func FindMID(mid string) bool {
 	sqlStr := "select mid from messages where mid = ?"
 	stmt, _ := Db.Prepare(sqlStr)
 	row := stmt.QueryRow(mid)

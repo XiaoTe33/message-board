@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"message-board/dao"
 	"message-board/service"
 )
 
@@ -14,7 +13,7 @@ func Register1(c *gin.Context) {
 		c.JSON(200, gin.H{"err": "用户名无效"})
 		return
 	}
-	if err := dao.UsernameExist(username); err == nil {
+	if err := service.UsernameExist(username); err == nil {
 		c.JSON(200, gin.H{"err": "用户名已存在"})
 		return
 	}
@@ -22,7 +21,7 @@ func Register1(c *gin.Context) {
 		c.JSON(200, gin.H{"err": "密码无效"})
 		return
 	}
-	dao.AddUser(username, password)
+	service.AddUserOK(username, password)
 	c.JSON(200, gin.H{"msg": "注册成功"})
 
 }
@@ -30,21 +29,21 @@ func Register1(c *gin.Context) {
 func Login1(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
-	if err := dao.UsernameAndPasswordExist(username, password); err != nil {
+	if err := service.UsernameAndPassWordExist(username, password); err != nil {
 		c.JSON(200, gin.H{"err": "用户名或密码错误"})
 		return
 	}
 	c.SetCookie("cookie", username, 3600, "/user/", "localhost", false, true)
 	c.SetCookie("cookie", username, 3600, "/message/", "localhost", false, true)
 	c.SetCookie("cookie", username, 3600, "/comment/", "localhost", false, true)
-	c.JSON(200, dao.FindMessageByReceiver(username))
+	c.JSON(200, service.FindMessageByReceiverOK(username))
 
 }
 
 func ChangePassword1(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
-	if err := dao.UsernameAndPasswordExist(username, password); err != nil {
+	if err := service.UsernameAndPassWordExist(username, password); err != nil {
 		c.JSON(200, gin.H{"err": "用户名或密码错误"})
 		return
 	}
@@ -53,7 +52,7 @@ func ChangePassword1(c *gin.Context) {
 		c.JSON(200, gin.H{"err": "新密码无效"})
 		return
 	}
-	dao.UpdatePassword(username, newPassword)
+	service.UpdatePasswordOK(username, newPassword)
 	c.JSON(200, gin.H{"msg": "密码修改成功"})
 }
 

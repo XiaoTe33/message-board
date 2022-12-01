@@ -39,7 +39,7 @@ func ChangeMessageByMID() {
 		text := ""
 		fmt.Print("请输入修改后的文本:")
 		fmt.Scan(&text)
-		if !dao.MIDExist(mid) {
+		if !dao.FindMID(mid) {
 			fmt.Println("mid不存在")
 			continue
 		}

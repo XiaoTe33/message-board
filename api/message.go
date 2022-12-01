@@ -2,14 +2,13 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"message-board/dao"
 	"message-board/service"
 )
 
 func Change1(c *gin.Context) {
 	mid := c.PostForm("mid")
 	text := c.PostForm("text")
-	if !dao.MIDExist(mid) {
+	if !service.MIDExist(mid) {
 		c.JSON(200, gin.H{"err": "mid无效"})
 		return
 	}
@@ -17,7 +16,7 @@ func Change1(c *gin.Context) {
 		c.JSON(200, gin.H{"err": "文本过长"})
 		return
 	}
-	dao.UpdateMessageByMID(mid, text)
+	service.UpdateMessageByMIDOK(mid, text)
 	c.JSON(200, gin.H{"msg": "修改成功"})
 	return
 }
@@ -38,27 +37,27 @@ func Send1(c *gin.Context) {
 		c.JSON(200, gin.H{"err": "信息量过大"})
 		return
 	}
-	dao.AddMessage(sender, receiver, text)
+	service.AddMessageOK(sender, receiver, text)
 	c.JSON(200, gin.H{"msg": "留言成功"})
 	return
 }
 
 func Delete1(c *gin.Context) {
 	mid := c.PostForm("mid")
-	if !dao.MIDExist(mid) {
+	if !service.MIDExist(mid) {
 		c.JSON(200, gin.H{"err": "mid无效"})
 		return
 	}
-	dao.DeleteMessageByMID(mid)
+	service.DeleteMessageByMIDOK(mid)
 	c.JSON(200, gin.H{"msg": "留言删除成功"})
 
 }
 
 func Comments(c *gin.Context) {
 	mid := c.PostForm("mid")
-	if !dao.MIDExist(mid) {
+	if !service.MIDExist(mid) {
 		c.JSON(200, gin.H{"err": "mid不存在"})
 		return
 	}
-	c.JSON(200, dao.FindCommentByMID(mid))
+	c.JSON(200, service.FindCommentByMIDOK(mid))
 }

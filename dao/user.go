@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func UsernameExist(username string) error {
+func FindUsername(username string) error {
 	sqlStr := "select username from userdata where username = ?"
 	stmt, err := Db.Prepare(sqlStr)
 	if err != nil {
@@ -19,7 +19,7 @@ func UsernameExist(username string) error {
 	return nil
 }
 
-func UsernameAndPasswordExist(username string, password string) error {
+func FindUsernameAndPassword(username string, password string) error {
 	sqlStr := "select username from userdata where username = ? and password = ?"
 	stmt, err := Db.Prepare(sqlStr)
 	if err != nil {

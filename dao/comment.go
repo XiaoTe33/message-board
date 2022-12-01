@@ -51,7 +51,7 @@ func AddComment(sender string, mid string, text string) {
 	}
 }
 
-func CIDExist(cid string) bool {
+func FindCID(cid string) bool {
 	sqlStr := "select cid from comments where cid = ?"
 	stmt, _ := Db.Prepare(sqlStr)
 	row := stmt.QueryRow(cid)
@@ -64,8 +64,8 @@ func CIDExist(cid string) bool {
 	return true
 }
 
-func RIDExist(rid string) bool {
-	return CIDExist(rid)
+func FindRID(rid string) bool {
+	return FindCID(rid)
 }
 
 func UpdateCommentByCID(cid string, text string) {

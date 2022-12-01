@@ -34,14 +34,14 @@ func main03() {
 func main02() {
 	u := "xiaote"
 	p := "1"
-	err := dao.UsernameAndPasswordExist(u, p)
+	err := dao.FindUsernameAndPassword(u, p)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 func main01() {
 	u := "xiaote"
-	err := dao.UsernameExist(u)
+	err := dao.FindUsername(u)
 	if err != nil {
 		fmt.Println(err)
 	}
