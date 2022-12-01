@@ -9,16 +9,8 @@ import (
 )
 
 func FindCommentByMID(mid string) map[string]interface{} {
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
 	sqlStr := "select mid, cid, sender, time, text from comments where mid = ?"
-	stmt, err := db.Prepare(sqlStr)
+	stmt, err := Db.Prepare(sqlStr)
 	if err != nil {
 		fmt.Println("prepare err")
 		return nil
@@ -49,18 +41,10 @@ func FindCommentByMID(mid string) map[string]interface{} {
 }
 
 func AddComment(sender string, mid string, text string) {
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
 	now := time.Now()
 	t := strconv.Itoa(now.Hour()) + strconv.Itoa(now.Minute()) + strconv.Itoa(now.Second())
 	sqlStr := "insert into comments(mid, sender, time, text) values(?, ?, ?, ?)"
-	_, err := db.Exec(sqlStr, mid, sender, t, text)
+	_, err := Db.Exec(sqlStr, mid, sender, t, text)
 	if err != nil {
 		fmt.Println("Exec err")
 		return
@@ -68,16 +52,8 @@ func AddComment(sender string, mid string, text string) {
 }
 
 func CIDExist(cid string) bool {
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
 	sqlStr := "select cid from comments where cid = ?"
-	stmt, _ := db.Prepare(sqlStr)
+	stmt, _ := Db.Prepare(sqlStr)
 	row := stmt.QueryRow(cid)
 	id := ""
 	err := row.Scan(&id)
@@ -93,16 +69,8 @@ func RIDExist(rid string) bool {
 }
 
 func UpdateCommentByCID(cid string, text string) {
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
 	sqlStr := "update comments set text = ? where cid =?"
-	_, err := db.Exec(sqlStr, text, cid)
+	_, err := Db.Exec(sqlStr, text, cid)
 	if err != nil {
 		fmt.Println("exec err")
 		return
@@ -110,16 +78,9 @@ func UpdateCommentByCID(cid string, text string) {
 }
 
 func DeleteCommentByCID(cid string) {
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
 
 	sqlStr := "update comments set deleted = '留言已删除' where cid =?"
-	_, err := db.Exec(sqlStr, cid)
+	_, err := Db.Exec(sqlStr, cid)
 	if err != nil {
 		fmt.Println("exec err")
 		return
@@ -127,18 +88,10 @@ func DeleteCommentByCID(cid string) {
 }
 
 func AddResponseComment(sender string, mid string, rid string, text string) {
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
 	now := time.Now()
 	t := strconv.Itoa(now.Hour()) + strconv.Itoa(now.Minute()) + strconv.Itoa(now.Second())
 	sqlStr := "insert into comments(mid, sender, time, text, rid) values(?, ?, ?, ?, ?)"
-	_, err := db.Exec(sqlStr, mid, sender, t, text, rid)
+	_, err := Db.Exec(sqlStr, mid, sender, t, text, rid)
 	if err != nil {
 		fmt.Println("Exec err")
 		return
@@ -148,16 +101,8 @@ func AddResponseComment(sender string, mid string, rid string, text string) {
 // FindDialogByCID 通过某条评论查找出前后所有的对话
 func FindDialogByCID(cid string) map[string]model.Comment {
 	var dialog = map[string]model.Comment{}
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
 	sqlStr := "select cid from comments "
-	rows, err := db.Query(sqlStr)
+	rows, err := Db.Query(sqlStr)
 	defer func(rows *sql.Rows) {
 		err := rows.Close()
 		if err != nil {
@@ -176,9 +121,9 @@ func FindDialogByCID(cid string) map[string]model.Comment {
 			return nil
 		}
 		if FindFatherCommentByCID(cid) == FindFatherCommentByCID(cid2) { //如果根节点相同说明属于同一段对话
-			db2, _ := InitDB()
+
 			sqlStr2 := "select mid, cid, sender, time, text, deleted, rid from comments where cid = ?"
-			row := db2.QueryRow(sqlStr2, cid2)
+			row := Db.QueryRow(sqlStr2, cid2)
 			var comment model.Comment
 			err := row.Scan(&comment.MID, &comment.CID, &comment.Sender,
 				&comment.Time, &comment.Text, &comment.Deleted, &comment.RID)
@@ -187,10 +132,6 @@ func FindDialogByCID(cid string) map[string]model.Comment {
 				return nil
 			}
 			dialog[comment.CID] = comment //将所有同一段对话的内容存储起来
-			err2 := db2.Close()
-			if err2 != nil {
-				return nil
-			}
 		}
 
 	}
@@ -199,17 +140,9 @@ func FindDialogByCID(cid string) map[string]model.Comment {
 
 // FindFatherCommentByCID 找到某个评论的根节点
 func FindFatherCommentByCID(cid string) string {
-	db, _ := InitDB()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
 	for {
 		sqlStr := "select rid from comments where cid =?"
-		row := db.QueryRow(sqlStr, cid)
+		row := Db.QueryRow(sqlStr, cid)
 		rid := ""
 		err := row.Scan(&rid)
 		if err != nil {

@@ -5,15 +5,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func InitDB() (Db *sql.DB, err error) {
+var Db *sql.DB
+
+func InitDB() (err error) {
 	dsn := "root:root@tcp(localhost:3306)/message_board_database"
 	Db, err = sql.Open("mysql", dsn)
 	if err != nil {
-		return Db, err
+		return err
 	}
 	err = Db.Ping()
 	if err != nil {
-		return Db, err
+		return err
 	}
-	return Db, nil
+	return nil
 }
